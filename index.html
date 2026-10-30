@@ -3,943 +3,813 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#f5f6fa">
-<title>Aprende Código Morse</title>
-
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Aprende código Morse</title>
 <style>
 :root {
-  --bg:#f5f6fa;
-  --card:#fff;
-  --ink:#202431;
-  --muted:#697386;
-  --line:#dce1ea;
-  --blue:#385f9d;
-  --green:#16835d;
-  --gold:#a66a16;
+  --bg: #f5f5f2;
+  --paper: #ffffff;
+  --ink: #202522;
+  --muted: #747b75;
+  --line: #e5e8e2;
+  --green: #426b56;
+  --green-light: #eaf1eb;
+  --orange: #d58b50;
+  --red: #bd5b53;
+  --shadow: 0 5px 24px rgba(28,42,32,.055);
 }
-* {box-sizing:border-box}
-
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
 body {
-  margin:0;
-  background:var(--bg);
-  color:var(--ink);
-  font:16px/1.5 system-ui,sans-serif;
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  line-height: 1.5;
 }
-
-main {
-  max-width:950px;
-  margin:auto;
-  padding:20px 13px 50px;
+button { font: inherit; cursor: pointer; }
+.page {
+  width: min(1080px, calc(100% - 32px));
+  margin: auto;
+  padding: 35px 0 70px;
 }
-
+header { margin-bottom: 28px; }
+.eyebrow {
+  color: var(--green);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+}
 h1 {
-  font-size:clamp(30px,7vw,43px);
-  line-height:1.1;
-  margin:10px 0;
+  font-size: clamp(32px, 6vw, 54px);
+  line-height: 1.05;
+  letter-spacing: -.045em;
+  margin: 10px 0;
 }
-
-h2 {font-size:21px;margin:0 0 10px}
-h3 {font-size:17px;margin:0 0 6px}
-p {margin:7px 0 12px}
-
-.muted {color:var(--muted)}
-.small {font-size:13px;color:var(--muted)}
-
-.card {
-  background:var(--card);
-  border:1px solid #e5e8ef;
-  border-radius:17px;
-  padding:16px;
-  margin:14px 0;
-  box-shadow:0 4px 18px #26334a0a;
+.intro { color: var(--muted); max-width: 620px; }
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 20px;
 }
-
-button {
-  border:0;
-  border-radius:11px;
-  background:var(--blue);
-  color:white;
-  padding:12px 15px;
-  font:inherit;
-  font-weight:700;
-  cursor:pointer;
-  touch-action:manipulation;
+.legend span {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  padding: 8px 13px;
+  border-radius: 30px;
+  font-size: 13px;
 }
-
-button.secondary {
-  background:#edf0f6;
-  color:#34425a;
+.legend b { color: var(--green); }
+.section {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 19px;
+  padding: clamp(17px, 3vw, 27px);
+  margin-top: 19px;
+  box-shadow: var(--shadow);
 }
-
-button:disabled {opacity:.45}
-
-.tabs {
-  display:flex;
-  gap:7px;
-  overflow-x:auto;
-  padding:5px 0 10px;
+.section-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+  margin-bottom: 17px;
 }
-
-.tabs button {white-space:nowrap;flex-shrink:0}
-
-.pill {
-  display:inline-block;
-  background:#edf0f6;
-  border-radius:30px;
-  padding:6px 10px;
-  font-size:13px;
-  margin:3px;
+.section-number {
+  color: var(--green);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: .12em;
 }
-
-.key {
-  display:flex;
-  flex-wrap:wrap;
-  gap:12px;
-  color:var(--muted);
-  font-size:14px;
+h2 {
+  font-size: 22px;
+  letter-spacing: -.025em;
+  margin: 3px 0;
 }
-
-.dot {color:var(--green);font-weight:900}
-.dash {color:var(--gold);font-weight:900}
-
-/* ÁRBOL */
-
-.tree-grid {
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:12px;
-  margin-top:15px;
+h3 { font-size: 15px; margin: 0 0 12px; }
+.description { color: var(--muted); font-size: 13px; margin: 5px 0 0; }
+.small-note { color: var(--muted); font-size: 12px; }
+.tree-legend {
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap;
+  font-size: 12px;
+  color: var(--muted);
+  margin-bottom: 12px;
 }
-
-.tree-card {
-  border:1px solid var(--line);
-  border-radius:14px;
-  padding:10px;
-  background:#fbfcfe;
-  min-width:0;
+.tree-legend b { color: var(--green); }
+.tree-scroll {
+  width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  border-radius: 13px;
+  background: #fafbf9;
+  border: 1px solid var(--line);
+  scrollbar-width: thin;
 }
-
-.tree-card h3 {text-align:center}
-.tree-card p {
-  text-align:center;
-  color:var(--muted);
-  font-size:12px;
+#tree {
+  display: block;
+  width: 100%;
+  min-width: 760px;
+  height: auto;
 }
-
-.tree-svg {
-  width:100%;
-  height:auto;
-  display:block;
+.tree-edge {
+  stroke: #cbd3ca;
+  stroke-width: 2;
+  fill: none;
 }
-
-.edge {
-  stroke:#aeb9ca;
-  stroke-width:1.8;
-  fill:none;
+.tree-node {
+  fill: white;
+  stroke: #cbd3ca;
+  stroke-width: 1.6;
 }
-
-.node circle {
-  fill:white;
-  stroke:#8e9bb0;
-  stroke-width:1.5;
+.tree-node.letter {
+  fill: var(--green-light);
+  stroke: var(--green);
+  stroke-width: 2;
 }
-
-.node text {
-  font-size:12px;
-  font-weight:800;
-  fill:#222a39;
-  text-anchor:middle;
-  dominant-baseline:central;
+.tree-label {
+  fill: #26342b;
+  font-size: 15px;
+  font-weight: 750;
+  text-anchor: middle;
+  dominant-baseline: central;
 }
-
-.node .sub {
-  font-size:7px;
-  font-weight:500;
-  fill:#697386;
+.tree-branch {
+  fill: var(--green);
+  font-size: 12px;
+  font-weight: 800;
+  text-anchor: middle;
 }
-
-.node.ext circle {
-  fill:#fff8e9;
-  stroke:#c89a4c;
+.tree-depth {
+  fill: #899189;
+  font-size: 11px;
+  text-anchor: end;
 }
-
-.node.blank circle {
-  fill:#f2f4f7;
-  stroke:#d4dae3;
-  stroke-dasharray:2 2;
+.tree-start {
+  fill: #69736a;
+  font-size: 11px;
+  font-weight: 700;
 }
-
-.node.blank text {fill:#a6afbd}
-
-/* MNEMOTECNIAS */
-
-.mnemonic-list {
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:9px;
+.tree-caption {
+  padding: 10px 2px 0;
+  font-size: 11px;
+  color: var(--muted);
 }
-
-.mnemonic {
-  border:1px solid var(--line);
-  border-radius:13px;
-  padding:12px;
-  background:#fcfcfe;
+.levels {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0,1fr));
+  gap: 12px;
 }
-
-.seq {
-  font:800 14px monospace;
-  color:var(--blue);
-  margin-bottom:6px;
+.level-card {
+  border: 1px solid var(--line);
+  border-radius: 13px;
+  padding: 14px;
+  background: #fcfcfa;
 }
-
-.tag {
-  font-size:11px;
-  font-weight:800;
-  text-transform:uppercase;
-  color:var(--muted);
+.level-title {
+  font-size: 11px;
+  color: var(--green);
+  font-weight: 800;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+  margin-bottom: 7px;
 }
-
-.mnemonic p {font-size:14px}
-
-/* QUIZ */
-
-.progress {
-  height:7px;
-  background:#e9edf4;
-  border-radius:20px;
-  overflow:hidden;
-  margin:12px 0;
+.level-letters {
+  font-size: 19px;
+  font-weight: 800;
+  letter-spacing: .12em;
+  margin-bottom: 7px;
 }
-
-.progress span {
-  display:block;
-  height:100%;
-  background:var(--blue);
-  width:0;
-  transition:.2s;
+.level-card p { margin: 0; font-size: 13px; color: var(--muted); }
+.song {
+  margin-top: 12px;
+  padding: 13px 15px;
+  background: var(--green-light);
+  border-radius: 12px;
+  font-size: 13px;
 }
-
+.song b { color: var(--green); }
+.quiz-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.score {
+  background: var(--green-light);
+  color: var(--green);
+  border-radius: 30px;
+  padding: 7px 12px;
+  font-weight: 800;
+  font-size: 13px;
+}
+.mode-row {
+  display: flex;
+  gap: 7px;
+  flex-wrap: wrap;
+  margin: 15px 0;
+}
+.mode-btn, .secondary-btn {
+  border: 1px solid var(--line);
+  background: white;
+  color: var(--ink);
+  padding: 9px 13px;
+  border-radius: 10px;
+  font-size: 12px;
+  font-weight: 700;
+}
+.mode-btn.active {
+  background: var(--green);
+  color: white;
+  border-color: var(--green);
+}
+.quiz-box {
+  background: #fafbf9;
+  border: 1px solid var(--line);
+  border-radius: 15px;
+  padding: 22px;
+  text-align: center;
+}
+.progress-track {
+  height: 5px;
+  background: #e6eae5;
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 19px;
+}
+#progress {
+  height: 100%;
+  width: 10%;
+  background: var(--green);
+  transition: width .2s;
+}
+.question-count { color: var(--muted); font-size: 12px; }
 .question {
-  font-size:19px;
-  font-weight:800;
-  margin:15px 0;
+  font-size: clamp(32px, 7vw, 52px);
+  font-weight: 800;
+  letter-spacing: .04em;
+  margin: 13px 0 20px;
+  min-height: 65px;
 }
-
 .options {
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:8px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0,1fr));
+  gap: 9px;
+  max-width: 480px;
+  margin: auto;
 }
-
-.opt {
-  background:#f1f4f9;
-  color:#26334a;
-  border:1px solid #e0e6ef;
-  text-align:center;
-  min-height:50px;
-  padding:10px;
+.option {
+  min-height: 52px;
+  border: 1px solid var(--line);
+  background: white;
+  border-radius: 11px;
+  font-size: 18px;
+  font-weight: 800;
+  transition: .15s;
 }
-
-.opt.correct {
-  background:#e5f5ed;
-  border-color:#8bc9a9;
-  color:#145b3e;
-}
-
-.opt.wrong {
-  background:#fff0f0;
-  border-color:#e4a3a3;
-  color:#8f3030;
-}
-
+.option:hover:not(:disabled) { border-color: var(--green); }
+.option:disabled { cursor: default; }
+.option.correct { background: #e5f2e7; border-color: #6c9b73; color: #285b35; }
+.option.wrong { background: #f8e9e7; border-color: #c87970; color: #983f37; }
 .feedback {
-  padding:12px;
-  border-radius:11px;
-  margin-top:12px;
-  font-weight:650;
+  min-height: 25px;
+  margin: 15px 0 5px;
+  font-size: 13px;
+  font-weight: 700;
 }
-
-.good {background:#e7f5ed;color:#145b3e}
-.bad {background:#fff0f0;color:#8f3030}
-
-.actions {
-  display:flex;
-  gap:8px;
-  flex-wrap:wrap;
-  margin-top:13px;
+.feedback.good { color: var(--green); }
+.feedback.bad { color: var(--red); }
+.quiz-actions {
+  display: flex;
+  justify-content: center;
+  gap: 9px;
+  flex-wrap: wrap;
+  margin-top: 13px;
 }
-
-/* TARJETAS */
-
-.flash {
-  background:linear-gradient(145deg,#f0f4fc,#fff);
-  border:1px solid #dfe6f2;
-  border-radius:15px;
-  padding:25px 12px;
-  text-align:center;
-  min-height:145px;
+.primary-btn {
+  background: var(--green);
+  color: white;
+  border: 0;
+  border-radius: 10px;
+  padding: 11px 18px;
+  font-weight: 750;
 }
-
-.flash .big {
-  font-size:34px;
-  font-weight:850;
-  letter-spacing:.08em;
+.primary-btn:disabled { opacity: .4; cursor: default; }
+.flash-area {
+  display: grid;
+  place-items: center;
+  min-height: 190px;
 }
-
-.flash .answer {
-  font:800 27px monospace;
-  color:var(--blue);
-  margin-top:8px;
+.flash-card {
+  width: min(100%, 430px);
+  min-height: 165px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: #fafbf9;
+  display: grid;
+  place-items: center;
+  text-align: center;
+  padding: 22px;
 }
-
-/* TABLAS */
-
-.table-wrap {overflow-x:auto}
-
-table {
-  width:100%;
-  border-collapse:collapse;
-  font-size:14px;
+.flash-small {
+  font-size: 11px;
+  color: var(--muted);
+  letter-spacing: .12em;
+  font-weight: 800;
+  text-transform: uppercase;
 }
-
-th,td {
-  text-align:left;
-  padding:9px;
-  border-bottom:1px solid #e9ecf1;
+.flash-main { font-size: 46px; font-weight: 850; margin: 8px 0; }
+.flash-answer { color: var(--green); font-size: 20px; font-weight: 800; }
+.flash-actions { display: flex; justify-content: center; gap: 9px; flex-wrap: wrap; margin-top: 13px; }
+.table-tabs {
+  display: flex;
+  gap: 7px;
+  flex-wrap: wrap;
+  margin-bottom: 14px;
 }
-
-th {
-  font-size:12px;
-  color:var(--muted);
-  text-transform:uppercase;
+.tab-btn {
+  border: 1px solid var(--line);
+  background: white;
+  border-radius: 9px;
+  padding: 8px 12px;
+  font-size: 12px;
+  font-weight: 700;
 }
-
-.code {
-  font:750 15px monospace;
-  letter-spacing:.06em;
-  white-space:nowrap;
+.tab-btn.active { background: var(--green-light); border-color: #b8cabb; color: var(--green); }
+.morse-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
 }
-
-details {
-  border-top:1px solid #edf0f4;
-  padding:12px 0;
+.morse-table th {
+  color: var(--muted);
+  font-size: 11px;
+  text-align: left;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  padding: 10px;
+  border-bottom: 1px solid var(--line);
 }
-
-summary {font-weight:700;cursor:pointer}
-
-input {
-  width:100%;
-  padding:12px;
-  border:1px solid var(--line);
-  border-radius:10px;
-  font:inherit;
+.morse-table td {
+  padding: 9px 10px;
+  border-bottom: 1px solid #eff1ed;
 }
-
-@media(max-width:620px) {
-  main {padding:15px 11px 40px}
-  .card {padding:13px}
-  .tree-grid {grid-template-columns:1fr}
-  .tree-card {padding:10px 14px}
-  .tree-svg {max-width:390px;margin:auto}
-  .mnemonic-list {grid-template-columns:1fr}
-  .options {grid-template-columns:1fr 1fr}
-  .opt {font-size:14px;padding:10px 6px}
+.morse-table tr:last-child td { border-bottom: 0; }
+.morse-table td:first-child { font-weight: 850; width: 28%; }
+.morse-code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 16px;
+  font-weight: 800;
+  letter-spacing: .12em;
+  color: var(--green);
+}
+.table-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0,1fr));
+  gap: 16px;
+}
+.table-block {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  overflow: hidden;
+}
+.table-block h3 { padding: 12px 13px 0; }
+.table-block table { width: 100%; }
+.timing {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0,1fr));
+  gap: 9px;
+  margin-top: 14px;
+}
+.time-card {
+  background: #fafbf9;
+  border: 1px solid var(--line);
+  border-radius: 11px;
+  padding: 12px;
+  text-align: center;
+}
+.time-card b { display: block; font-size: 19px; color: var(--green); }
+.time-card span { font-size: 11px; color: var(--muted); }
+footer { text-align: center; color: var(--muted); font-size: 11px; margin-top: 25px; }
+@media(max-width:650px) {
+  .page { width: min(100% - 20px, 560px); padding-top: 25px; }
+  .section { border-radius: 15px; padding: 16px; }
+  .levels, .table-grid { grid-template-columns: 1fr; }
+  .timing { grid-template-columns: 1fr; }
+  .quiz-box { padding: 15px 11px; }
+  .option { min-height: 50px; }
 }
 </style>
 </head>
-
 <body>
-<main>
-
+<main class="page">
 <header>
-  <div class="pill">📡 GUÍA DE ESTUDIO</div>
-  <h1>Aprende código Morse</h1>
-  <p class="muted">
-    Aprende las letras, memoriza las ramas y practica
-    con juegos interactivos.
-  </p>
-  <div class="key">
-    <span><b class="dot">● Punto</b> = izquierda</span>
-    <span><b class="dash">━ Raya</b> = derecha</span>
+  <div class="eyebrow">Guía de estudio · Señales y comunicación</div>
+  <h1>Aprende código Morse<span style="color:var(--green)">.</span></h1>
+  <p class="intro">Aprende las letras, entiende el árbol de Morse y practica hasta reconocer cada código sin pensarlo.</p>
+  <div class="legend">
+    <span><b>· Punto</b> = izquierda</span>
+    <span><b>— Raya</b> = derecha</span>
+    <span><b>1 letra</b> = una secuencia</span>
   </div>
 </header>
 
-<!-- ÁRBOL -->
-
-<section class="card" id="arbol">
-<h2>1. Árbol visual de Morse</h2>
-<p class="small">
-Cada círculo es una letra o una continuación de rama.
-El árbol se divide en dos: E (punto) y T (raya).
-Sigue las líneas para encontrar cada letra.
-</p>
-
-<div class="tree-grid" id="trees"></div>
-
-<p class="small">
-Ä y Ö son caracteres extendidos de otros idiomas.
-Las casillas vacías no corresponden a letras A–Z.
-</p>
+<section class="section">
+  <div class="section-head">
+    <div>
+      <div class="section-number">01 · ESTRUCTURA</div>
+      <h2>El árbol visual de Morse</h2>
+      <p class="description">Empieza arriba y sigue cada rama. Izquierda = punto · Derecha = raya.</p>
+    </div>
+  </div>
+  <div class="tree-legend">
+    <span><b>●</b> Letra existente</span>
+    <span>○ Continuación de una secuencia</span>
+    <span>· Punto</span>
+    <span>— Raya</span>
+  </div>
+  <div class="tree-scroll">
+    <svg id="tree" viewBox="0 0 1000 570" role="img" aria-label="Árbol de código Morse con las letras del alfabeto"></svg>
+  </div>
+  <div class="tree-caption">Desliza horizontalmente para recorrer el árbol en pantallas pequeñas. Las letras se ubican en el punto exacto de su secuencia.</div>
 </section>
 
-<!-- MNEMOTECNIAS -->
-
-<section class="card" id="memoria">
-<h2>2. Frases para memorizar las filas</h2>
-<p class="small">
-Elige la frase o playlist que más te resuene.
-Las iniciales siempre siguen el orden de izquierda a derecha.
-</p>
-<div id="mnemonics"></div>
+<section class="section">
+  <div class="section-head">
+    <div>
+      <div class="section-number">02 · MEMORIZACIÓN</div>
+      <h2>Frases para recordar las filas</h2>
+      <p class="description">Usa las iniciales en orden de izquierda a derecha para recordar cada nivel.</p>
+    </div>
+  </div>
+  <div class="levels">
+    <div class="level-card">
+      <div class="level-title">Nivel 1 · Inicio</div>
+      <div class="level-letters">E · T</div>
+      <p>Solo dos posibilidades: punto o raya.</p>
+      <div class="song"><b>Regla:</b> E es un punto (·). T es una raya (—).</div>
+    </div>
+    <div class="level-card">
+      <div class="level-title">Nivel 2</div>
+      <div class="level-letters">I A N M</div>
+      <p>Dos señales por letra.</p>
+      <div class="song"><b>Frase:</b> “Isabel Ama Nuevas Melodías”.</div>
+    </div>
+    <div class="level-card">
+      <div class="level-title">Nivel 3</div>
+      <div class="level-letters">S U R W D K G O</div>
+      <p>Tres señales por letra.</p>
+      <div class="song"><b>Frase:</b> “Sofía Usa Ropa; Walter Diseña, Kevin Guarda Outfits”.</div>
+    </div>
+    <div class="level-card">
+      <div class="level-title">Nivel 4 · Rama E</div>
+      <div class="level-letters">H V F L P J</div>
+      <p>Cuatro señales. Algunas posiciones no corresponden a letras.</p>
+      <div class="song"><b>Playlist:</b> “Hips Don't Lie · Viva La Vida · Flowers · Love Story · Perfect · Jolene”.</div>
+    </div>
+    <div class="level-card">
+      <div class="level-title">Nivel 4 · Rama T</div>
+      <div class="level-letters">B X C Y Z Q</div>
+      <p>Cuatro señales. Recuerda el orden de izquierda a derecha.</p>
+      <div class="song"><b>Frase:</b> “Bruno y Ximena Cocinan; Yasna Zumba, Quique”.</div>
+    </div>
+  </div>
+  <p class="small-note" style="margin-top:13px">Las frases son ayudas de memoria, no reglas del código. No todas las ramas tienen una letra en cada posición.</p>
 </section>
 
-<!-- QUIZ -->
-
-<section class="card" id="quiz">
-<h2>3. Quiz: practica jugando</h2>
-
-<div>
-  <span class="pill" id="score">⭐ 0 puntos</span>
-</div>
-
-<div class="tabs" id="modes">
-  <button class="secondary" data-mode="code">Código → letra</button>
-  <button class="secondary" data-mode="letter">Letra → código</button>
-  <button class="secondary" data-mode="mix">Mixto</button>
-  <button class="secondary" data-mode="number">Números y signos</button>
-</div>
-
-<div class="progress"><span id="bar"></span></div>
-<div class="small" id="counter">Pregunta 1 de 10</div>
-
-<div class="question" id="prompt"></div>
-<div class="options" id="options"></div>
-<div id="feedback"></div>
-
-<div class="actions">
-  <button id="next" disabled>Siguiente →</button>
-  <button class="secondary" id="restart">Reiniciar</button>
-</div>
+<section class="section">
+  <div class="quiz-top">
+    <div>
+      <div class="section-number">03 · ENTRENAMIENTO</div>
+      <h2>Quiz: practica jugando</h2>
+      <p class="description">10 preguntas por ronda. Cada acierto suma 10 puntos.</p>
+    </div>
+    <div class="score">⭐ <span id="score">0</span> puntos</div>
+  </div>
+  <div class="mode-row">
+    <button class="mode-btn active" data-mode="code">Código → letra</button>
+    <button class="mode-btn" data-mode="letter">Letra → código</button>
+    <button class="mode-btn" data-mode="mixed">Mixto</button>
+    <button class="mode-btn" data-mode="numbers">Números y signos</button>
+  </div>
+  <div class="quiz-box">
+    <div class="progress-track"><div id="progress"></div></div>
+    <div class="question-count" id="questionCount">Pregunta 1 de 10</div>
+    <div class="question" id="question">· —</div>
+    <div class="options" id="options"></div>
+    <div class="feedback" id="feedback" aria-live="polite"></div>
+    <div class="quiz-actions">
+      <button class="primary-btn" id="nextBtn" disabled>Siguiente →</button>
+      <button class="secondary-btn" id="resetBtn">Reiniciar ↻</button>
+    </div>
+  </div>
 </section>
 
-<!-- FLASHCARDS -->
-
-<section class="card" id="flashcards">
-<h2>4. Tarjetas de memoria</h2>
-<p class="small">
-Intenta recordar la respuesta antes de revelarla.
-</p>
-
-<div class="flash">
-  <div class="small" id="flashlabel"></div>
-  <div class="big" id="flashq"></div>
-  <div class="answer" id="flasha" hidden></div>
-</div>
-
-<div class="actions">
-  <button id="reveal">Mostrar respuesta</button>
-  <button class="secondary" id="another">Otra tarjeta ↻</button>
-  <button class="secondary" id="flip">Cambiar modo</button>
-</div>
+<section class="section">
+  <div class="section-head">
+    <div>
+      <div class="section-number">04 · REPASO</div>
+      <h2>Tarjetas de memoria</h2>
+      <p class="description">Intenta recordar la respuesta antes de revelarla.</p>
+    </div>
+  </div>
+  <div class="flash-area">
+    <div class="flash-card">
+      <div class="flash-small" id="flashLabel">¿Qué letra es este código?</div>
+      <div class="flash-main" id="flashQuestion">· —</div>
+      <div class="flash-answer" id="flashAnswer" hidden>A</div>
+    </div>
+  </div>
+  <div class="flash-actions">
+    <button class="primary-btn" id="revealBtn">Mostrar respuesta</button>
+    <button class="secondary-btn" id="nextFlashBtn">Otra tarjeta ↻</button>
+    <button class="secondary-btn" id="flashModeBtn">Cambiar modo</button>
+  </div>
 </section>
 
-<!-- CONSULTA -->
-
-<section class="card" id="reference">
-<h2>5. Tabla de consulta</h2>
-
-<details open>
-<summary>Letras A–Z</summary>
-<div class="table-wrap"><table id="lettertable"></table></div>
-</details>
-
-<details>
-<summary>Números 0–9</summary>
-<div class="table-wrap"><table id="numbertable"></table></div>
-</details>
-
-<details>
-<summary>Signos de puntuación</summary>
-<div class="table-wrap"><table id="puncttable"></table></div>
-<p class="small">
-La exclamación y algunos símbolos son extensiones de uso común.
-Las convenciones pueden variar según el curso.
-</p>
-</details>
-
-<details>
-<summary>Prosignos</summary>
-<div class="table-wrap"><table id="prosigntable"></table></div>
-</details>
-
+<section class="section">
+  <div class="section-head">
+    <div>
+      <div class="section-number">05 · CONSULTA</div>
+      <h2>Tabla de referencia</h2>
+      <p class="description">Consulta rápidamente las equivalencias del alfabeto y otros símbolos.</p>
+    </div>
+  </div>
+  <div class="table-tabs">
+    <button class="tab-btn active" data-tab="letters">Letras A–Z</button>
+    <button class="tab-btn" data-tab="numbers">Números 0–9</button>
+    <button class="tab-btn" data-tab="punctuation">Puntuación</button>
+    <button class="tab-btn" data-tab="prosigns">Prosignos</button>
+  </div>
+  <div id="tableContent"></div>
+  <p class="small-note" style="margin-top:14px">Algunos signos y convenciones pueden variar según el estándar o el contexto de uso. Los prosignos se transmiten como una secuencia continua.</p>
 </section>
 
-<footer class="small">
-Un punto dura 1 unidad y una raya 3 unidades.
-La pausa entre elementos de una letra es 1 unidad,
-entre letras 3 y entre palabras 7.
-</footer>
-
+<section class="section">
+  <div class="section-head">
+    <div>
+      <div class="section-number">06 · RITMO</div>
+      <h2>Cómo se mide el tiempo</h2>
+      <p class="description">El ritmo es tan importante como los puntos y las rayas.</p>
+    </div>
+  </div>
+  <div class="timing">
+    <div class="time-card"><b>1 unidad</b><span>Duración de un punto</span></div>
+    <div class="time-card"><b>3 unidades</b><span>Duración de una raya</span></div>
+    <div class="time-card"><b>1 unidad</b><span>Pausa entre elementos de una letra</span></div>
+    <div class="time-card"><b>3 unidades</b><span>Pausa entre letras</span></div>
+    <div class="time-card"><b>7 unidades</b><span>Pausa entre palabras</span></div>
+  </div>
+</section>
+<footer>Guía interactiva de código Morse · Hecha para practicar y memorizar</footer>
 </main>
 
 <script>
-const letters = {
-A:'.-', B:'-...', C:'-.-.', D:'-..', E:'.',
-F:'..-.', G:'--.', H:'....', I:'..', J:'.---',
-K:'-.-', L:'.-..', M:'--', N:'-.', O:'---',
-P:'.--.', Q:'--.-', R:'.-.', S:'...', T:'-',
-U:'..-', V:'...-', W:'.--', X:'-..-',
-Y:'-.--', Z:'--..'
+const morse = {
+A:".-", B:"-...", C:"-.-.", D:"-..", E:".", F:"..-.",
+G:"--.", H:"....", I:"..", J:".---", K:"-.-", L:".-..",
+M:"--", N:"-.", O:"---", P:".--.", Q:"--.-", R:".-.",
+S:"...", T:"-", U:"..-", V:"...-", W:".--", X:"-..-",
+Y:"-.--", Z:"--.."
 };
-
 const numbers = {
-'0':'-----','1':'.----','2':'..---',
-'3':'...--','4':'....-','5':'.....',
-'6':'-....','7':'--...','8':'---..','9':'----.'
+"0":"-----", "1":".----", "2":"..---", "3":"...--",
+"4":"....-", "5":".....", "6":"-....", "7":"--...",
+"8":"---..", "9":"----."
 };
-
 const punctuation = {
-'.':'.-.-.-', ',':'--..--', '?':'..--..',
-'!':'-.-.--', "'":'.----.', '"':'.-..-.',
-':':'---...', ';':'-.-.-.', '-':'-....-',
-'/':'-..-.', '(':'-.--.', ')':'-.--.-',
-'=':'-...-', '+':'.-.-.', '&':'.-...',
-'@':'.--.-.', '_':'..--.-', '$':'...-..-'
+".":".-.-.-", ",":"--..--", "?":"..--..", "'":".----.",
+"!":"-.-.--", "/":"-..-.", "(":"-.--.", ")":"-.--.-",
+"&":".-...", ":":"---...", ";":"-.-.-.", "=":"-...-",
+"+":".-.-.", "-":"-....-", "_":"..--.-", "\"":".-..-.",
+"$":"...-..-", "@":".--.-."
 };
-
 const prosigns = {
-SOS:'...---...',
-AR:'.-.-.',
-SK:'...-.-',
-BT:'-...-',
-AS:'.-...',
-KA:'-.-.-',
-HH:'........',
-SN:'...-.'
+"SOS":"...---...", "AR":".-.-.", "SK":"...-.-",
+"BT":"-...-", "AS":".-...", "KA":"-.-.-",
+"HH":"........", "SN":"...-."
 };
 
-const extended = {
-'Ä':'.-.-',
-'Á / Å':'.--.-',
-'É':'..-..',
-'Ñ':'--.--',
-'Ö':'---.',
-'Ü':'..--'
-};
+/* ÁRBOL */
+function drawTree() {
+  const svg = document.getElementById("tree");
+  const ns = "http://www.w3.org/2000/svg";
+  const W = 1000, top = 65, step = 112;
+  const maxDepth = 4;
+  const x = (depth, index) => W * (index + .5) / Math.pow(2, depth);
+  const y = depth => top + (depth - 1) * step;
+  const make = (tag, attrs, parent=svg, content="") => {
+    const el = document.createElementNS(ns, tag);
+    Object.entries(attrs).forEach(([k,v]) => el.setAttribute(k,v));
+    if(content) el.textContent = content;
+    parent.appendChild(el);
+    return el;
+  };
 
-/* ÁRBOL VISUAL */
+  svg.innerHTML = "";
+  make("text",{x:12,y:24,class:"tree-start"},"svg","E · punto / T · raya");
 
-const nodeMap = {
-'.':'E','-':'T',
-'..':'I','.-':'A','-.':'N','--':'M',
-'...':'S','..-':'U','.-.':'R','.--':'W',
-'-..':'D','-.-':'K','--.':'G','---':'O',
-'....':'H','...-':'V','..-.':'F',
-'.-..':'L','.--.':'P','.---':'J',
-'-...':'B','-..-':'X','-.-.':'C','-.--':'Y',
-'--..':'Z','--.-':'Q',
-'.-.-':'Ä','---.':'Ö'
-};
-
-function makeTree(root) {
-  const W=350,H=286,top=22,bottom=260;
-  const nodes=[];
-
-  function xFor(path) {
-    const d=path.length;
-    const index=parseInt(
-      path.replace(/\./g,'0').replace(/-/g,'1') || '0',2
-    );
-    return W*(index+.5)/(2**d);
-  }
-
-  function yFor(d) {
-    return top+(bottom-top)*d/4;
-  }
-
-  function add(path) {
-    const d=path.length;
-    nodes.push({
-      path,
-      x:xFor(path),
-      y:yFor(d),
-      d,
-      label:nodeMap[path]||''
-    });
-
-    if(d<4) {
-      add(path+'.');
-      add(path+'-');
+  // Líneas y etiquetas de cada rama
+  for(let depth=1; depth<maxDepth; depth++) {
+    for(let i=0; i<Math.pow(2,depth); i++) {
+      const px=x(depth,i), py=y(depth);
+      for(let branch=0; branch<2; branch++) {
+        const ni=i*2+branch;
+        const nx=x(depth+1,ni), ny=y(depth+1);
+        make("line",{x1:px,y1:py+17,x2:nx,y2:ny-17,class:"tree-edge"});
+        const mx=(px+nx)/2, my=(py+ny)/2;
+        make("text",{x:mx+(branch===0?-8:8),y:my-3,class:"tree-branch"},
+          "svg",branch===0?"·":"—");
+      }
     }
   }
 
-  add(root);
-
-  let edges='';
-
-  nodes.filter(n=>n.d>0).forEach(n=>{
-    const parent=nodes.find(
-      p=>p.path===n.path.slice(0,-1)
-    );
-
-    edges+=`
-      <line class="edge"
-        x1="${parent.x}" y1="${parent.y+9}"
-        x2="${n.x}" y2="${n.y-9}"/>
-    `;
-  });
-
-  const circles=nodes.map(n=>{
-    const cls=(n.label==='Ä'||n.label==='Ö')
-      ?'ext':(!n.label?'blank':'');
-
-    const label=n.label||'·';
-    const code=n.path
-      .replace(/\./g,'·')
-      .replace(/-/g,'—');
-
-    return `
-      <g class="node ${cls}">
-        <circle cx="${n.x}" cy="${n.y}" r="${n.d===1?14:12}"/>
-        <text x="${n.x}" y="${n.y-2}">${label}</text>
-        <text class="sub" x="${n.x}" y="${n.y+19}">${code}</text>
-      </g>
-    `;
-  }).join('');
-
-  const title=root==='.'
-    ?'Rama del punto · E'
-    :'Rama de la raya · T';
-
-  return `
-    <article class="tree-card">
-      <h3>${title}</h3>
-      <p>Profundidad hasta cuatro señales</p>
-      <svg class="tree-svg"
-        viewBox="0 0 ${W} ${H}"
-        role="img" aria-label="${title}">
-        ${edges}${circles}
-      </svg>
-    </article>
-  `;
-}
-
-document.getElementById('trees').innerHTML =
-  makeTree('.')+makeTree('-');
-
-/* MNEMOTECNIAS */
-
-const mnemonicData = [
-{
-title:'Nivel 1',
-seq:'E – T',
-opts:[
-['Frase','El Tren.'],
-['Canciones','Espresso · Thank U, Next']
-]
-},
-{
-title:'Nivel 2',
-seq:'I – A – N – M',
-opts:[
-['Frase','Inés Ama Nadar Mucho.'],
-['Otra frase','Isabel Ayer No Madrugó.'],
-['Canciones','Into You · As It Was · Night Changes · Mirrors']
-]
-},
-{
-title:'Nivel 3',
-seq:'S – U – R – W – D – K – G – O',
-opts:[
-['Frase','Sofía Usa Ropa; Wendy Diseña, Kevin Guarda Outfits.'],
-['Otra frase','Siempre Uso Reloj; Walter Dice: Keep Going, Olivia.'],
-['Canciones','Shake It Off · Umbrella · Rolling in the Deep · Watermelon Sugar · Dancing Queen · Karma · good 4 u · Oops!... I Did It Again']
-]
-},
-{
-title:'Nivel 4 · rama E',
-seq:'H – V – F – (vacío) – L – Ä – P – J',
-opts:[
-['Frase','Hoy Vienen Flores; (pausa); Luego Ana Prepara Jugo.'],
-['Canciones','Hips Don’t Lie · Viva La Vida · Flowers · (vacío) · Love Story · (Ä) · Perfect · Jolene']
-]
-},
-{
-title:'Nivel 4 · rama T',
-seq:'B – X – C – Y – Z – Q – Ö – (vacío)',
-opts:[
-['Frase','Bruno y Ximena Cocinan; Yasna Zumba, Quique Ordena.'],
-['Canciones','Bad Romance · XO · Crazy in Love · You Belong With Me · Zombie · Quit Playing Games · (Ö) · (vacío)']
-]
-}
-];
-
-document.getElementById('mnemonics').innerHTML =
-mnemonicData.map(m=>`
-  <div style="margin:15px 0">
-    <h3>${m.title}</h3>
-    <div class="mnemonic-list">
-      ${m.opts.map(o=>`
-        <article class="mnemonic">
-          <div class="tag">${o[0]}</div>
-          <div class="seq">${m.seq}</div>
-          <p>${o[1]}</p>
-        </article>
-      `).join('')}
-    </div>
-  </div>
-`).join('');
-
-/* TABLAS */
-
-function tablePairs(obj) {
-  const arr=Object.entries(obj);
-  let html=`
-    <thead>
-      <tr>
-        <th>Carácter</th><th>Morse</th>
-        <th>Carácter</th><th>Morse</th>
-      </tr>
-    </thead><tbody>
-  `;
-
-  const half=Math.ceil(arr.length/2);
-
-  for(let i=0;i<half;i++) {
-    const a=arr[i],b=arr[i+half];
-
-    html+=`
-      <tr>
-        <td><b>${a[0]}</b></td>
-        <td class="code">${a[1]}</td>
-        <td>${b?'<b>'+b[0]+'</b>':''}</td>
-        <td class="code">${b?b[1]:''}</td>
-      </tr>
-    `;
+  // Todas las posiciones hasta el cuarto nivel.
+  // Cada secuencia se convierte en su nodo correspondiente.
+  for(let depth=1; depth<=maxDepth; depth++) {
+    for(let i=0; i<Math.pow(2,depth); i++) {
+      let bits=i.toString(2).padStart(depth,"0");
+      let code=[...bits].map(b=>b==="0"?".":"-").join("");
+      const letter=Object.keys(morse).find(k=>morse[k]===code);
+      const cx=x(depth,i), cy=y(depth);
+      make("circle",{
+        cx,cy,r:letter?19:14,
+        class:letter?"tree-node letter":"tree-node"
+      });
+      if(letter) {
+        make("text",{x:cx,y:cy,class:"tree-label"},"svg",letter);
+      } else {
+        make("circle",{cx,cy,r:3,fill:"#b8c2b7"});
+      }
+    }
   }
-
-  return html+'</tbody>';
+  // Etiquetas de profundidad
+  for(let d=1;d<=4;d++) {
+    make("text",{x:985,y:y(d)+4,class:"tree-depth"},"svg",`Nivel ${d}`);
+  }
 }
-
-document.getElementById('lettertable').innerHTML =
-  tablePairs(letters);
-document.getElementById('numbertable').innerHTML =
-  tablePairs(numbers);
-document.getElementById('puncttable').innerHTML =
-  tablePairs(punctuation);
-document.getElementById('prosigntable').innerHTML =
-  tablePairs(prosigns);
+drawTree();
 
 /* QUIZ */
+const allLetters = Object.entries(morse);
+const allNumbers = Object.entries(numbers);
+const allPunctuation = Object.entries(punctuation);
+let mode="code", round=0, score=0, current=null, answered=false;
 
-const allCodes={...letters,...numbers,...punctuation};
+const $ = id => document.getElementById(id);
+const random = arr => arr[Math.floor(Math.random()*arr.length)];
+const shuffle = arr => [...arr].sort(()=>Math.random()-.5);
 
-let mode='code';
-let round=0;
-let points=0;
-let total=10;
-let current=null;
-let answered=false;
-
-const $=id=>document.getElementById(id);
-
-function shuffle(arr) {
-  return [...arr].sort(()=>Math.random()-.5);
+function quizPool() {
+  if(mode==="numbers") return [...allNumbers,...allPunctuation];
+  return allLetters;
 }
-
-function choose(arr) {
-  return arr[Math.floor(Math.random()*arr.length)];
-}
-
-function buildQuestion() {
-  answered=false;
-  $('feedback').innerHTML='';
-  $('next').disabled=true;
-
-  const pool=Object.entries(
-    mode==='number'
-      ?{...numbers,...punctuation}
-      :mode==='letter'
-        ?letters
-        :allCodes
-  );
-
-  const entry=choose(pool);
-
-  const askCode =
-    mode==='code' ||
-    (mode==='mix' && Math.random()<.5) ||
-    (mode==='number' && Math.random()<.5);
-
-  current={
-    key:entry[0],
-    code:entry[1],
-    askCode
-  };
-
-  const prompt=askCode
-    ?'¿Qué carácter corresponde a este código?'
-    :`¿Cuál es el código de ${entry[0]}?`;
-
-  $('prompt').innerHTML=`
-    ${prompt}
-    <div style="
-      font:800 28px monospace;
-      color:var(--blue);
-      margin-top:9px">
-      ${askCode?entry[1]:entry[0]}
-    </div>
-  `;
-
-  const correct=askCode?entry[0]:entry[1];
-
-  const distractors=shuffle(
-    pool.filter(x=>x[0]!==entry[0])
-    .map(x=>askCode?x[0]:x[1])
-  ).slice(0,3);
-
+function makeQuestion() {
+  const pool=quizPool();
+  const [char,code]=random(pool);
+  let direction=mode==="code"?"code":mode==="letter"?"letter":
+    mode==="mixed"?Math.random()<.5?"code":"letter":
+    Math.random()<.5?"code":"letter";
+  const correct=direction==="code"?char:code;
+  const distractors=shuffle(pool
+    .map(([c,m])=>direction==="code"?c:m)
+    .filter(v=>v!==correct)).slice(0,3);
   const options=shuffle([correct,...distractors]);
-
-  $('options').innerHTML=options.map(o=>`
-    <button class="opt">${o}</button>
-  `).join('');
-
-  [...$('options').querySelectorAll('button')]
-    .forEach(btn=>{
-      btn.addEventListener('click',()=>answer(btn,correct));
-    });
-
-  $('counter').textContent=
-    `Pregunta ${round+1} de ${total}`;
-
-  $('bar').style.width=`${round/total*100}%`;
+  return {char,code,direction,correct,options};
 }
-
-function answer(btn,correct) {
-  if(answered)return;
-
+function renderQuestion() {
+  answered=false;
+  current=makeQuestion();
+  $("questionCount").textContent=`Pregunta ${round+1} de 10`;
+  $("progress").style.width=`${(round+1)*10}%`;
+  $("question").textContent=current.direction==="code"?current.code:current.char;
+  $("feedback").textContent="";
+  $("feedback").className="feedback";
+  $("nextBtn").disabled=true;
+  $("options").innerHTML="";
+  current.options.forEach(option=>{
+    const btn=document.createElement("button");
+    btn.className="option";
+    btn.textContent=option;
+    btn.addEventListener("click",()=>answerQuestion(btn,option));
+    $("options").appendChild(btn);
+  });
+}
+function answerQuestion(btn,choice) {
+  if(answered) return;
   answered=true;
-
-  const ok=btn.textContent===correct;
-
-  if(ok)points+=10;
-
-  $('score').textContent=`⭐ ${points} puntos`;
-
-  [...$('options').querySelectorAll('button')]
-    .forEach(b=>{
-      b.disabled=true;
-
-      if(b.textContent===correct)
-        b.classList.add('correct');
-      else if(b===btn)
-        b.classList.add('wrong');
-    });
-
-  $('feedback').innerHTML=`
-    <div class="feedback ${ok?'good':'bad'}">
-      ${ok?'¡Muy bien! +10 puntos 🎉':'Casi. La respuesta correcta era '+correct+'.'}
-      <br>
-      <span style="font-weight:500">
-        ${current.key} = ${current.code}
-      </span>
-    </div>
-  `;
-
-  $('next').disabled=false;
+  const correct=choice===current.correct;
+  if(correct) {
+    score+=10;
+    $("score").textContent=score;
+    $("feedback").textContent="¡Correcto! Muy bien.";
+    $("feedback").className="feedback good";
+  } else {
+    $("feedback").textContent=`No exactamente. La respuesta era ${current.correct}.`;
+    $("feedback").className="feedback bad";
+  }
+  [...$("options").children].forEach(b=>{
+    b.disabled=true;
+    if(b.textContent===current.correct) b.classList.add("correct");
+    else if(b===btn) b.classList.add("wrong");
+  });
+  $("nextBtn").disabled=false;
 }
-
-function newRound() {
+function resetQuiz() {
   round=0;
-  points=0;
-  $('score').textContent='⭐ 0 puntos';
-  buildQuestion();
+  score=0;
+  $("score").textContent=score;
+  renderQuestion();
 }
-
-document.querySelectorAll('#modes button')
-.forEach(btn=>{
-  btn.addEventListener('click',()=>{
+$("nextBtn").addEventListener("click",()=>{
+  if(!answered) return;
+  round++;
+  if(round>=10) {
+    $("questionCount").textContent="Ronda completada";
+    $("question").textContent=`${score} / 100`;
+    $("options").innerHTML="";
+    $("feedback").textContent="¡Terminaste! Reinicia para jugar otra vez.";
+    $("feedback").className="feedback good";
+    $("progress").style.width="100%";
+    $("nextBtn").disabled=true;
+    return;
+  }
+  renderQuestion();
+});
+$("resetBtn").addEventListener("click",resetQuiz);
+document.querySelectorAll(".mode-btn").forEach(btn=>{
+  btn.addEventListener("click",()=>{
+    document.querySelectorAll(".mode-btn").forEach(b=>b.classList.remove("active"));
+    btn.classList.add("active");
     mode=btn.dataset.mode;
-
-    document.querySelectorAll('#modes button')
-      .forEach(b=>b.classList.toggle(
-        'secondary',b!==btn
-      ));
-
-    newRound();
+    resetQuiz();
   });
 });
-
-$('next').addEventListener('click',()=>{
-  round++;
-
-  if(round>=total) {
-    $('prompt').textContent=
-      `¡Ronda terminada! ${points} de ${total*10} puntos`;
-
-    $('options').innerHTML='';
-
-    $('feedback').innerHTML=`
-      <div class="feedback good">
-        ¡Buen trabajo! Elige otro modo o reinicia.
-      </div>
-    `;
-
-    $('counter').textContent='Fin de la ronda';
-    $('bar').style.width='100%';
-    $('next').disabled=true;
-
-  } else {
-    buildQuestion();
-  }
-});
-
-$('restart').addEventListener('click',newRound);
-
-newRound();
+resetQuiz();
 
 /* TARJETAS */
-
-let flashMode=0;
-let flashEntry=null;
-
-function newFlash() {
-  const pool=Object.entries(
-    flashMode===0?letters:allCodes
-  );
-
-  flashEntry=choose(pool);
-
-  $('flashlabel').textContent=
-    flashMode===0
-      ?'¿Qué letra es este código?'
-      :'¿Cuál es el código de este carácter?';
-
-  $('flashq').textContent=
-    flashMode===0?flashEntry[1]:flashEntry[0];
-
-  $('flasha').textContent=
-    flashMode===0?flashEntry[0]:flashEntry[1];
-
-  $('flasha').hidden=true;
-  $('reveal').disabled=false;
+let flashMode=0, flashItem=null;
+function nextFlash() {
+  const pool=flashMode===0?allLetters:[...allLetters,...allNumbers];
+  flashItem=random(pool);
+  $("flashAnswer").hidden=true;
+  $("flashLabel").textContent=flashMode===0?"¿Qué letra representa este código?":"¿Cuál es el código de este carácter?";
+  $("flashQuestion").textContent=flashMode===0?flashItem[1]:flashItem[0];
+  $("flashAnswer").textContent=flashMode===0?flashItem[0]:flashItem[1];
+  $("revealBtn").textContent="Mostrar respuesta";
 }
-
-$('reveal').addEventListener('click',()=>{
-  $('flasha').hidden=false;
-  $('reveal').disabled=true;
+$("revealBtn").addEventListener("click",()=>{
+  $("flashAnswer").hidden=false;
+  $("revealBtn").textContent="Respuesta revelada";
 });
-
-$('another').addEventListener('click',newFlash);
-
-$('flip').addEventListener('click',()=>{
+$("nextFlashBtn").addEventListener("click",nextFlash);
+$("flashModeBtn").addEventListener("click",()=>{
   flashMode=1-flashMode;
-  newFlash();
+  nextFlash();
 });
+nextFlash();
 
-newFlash();
-
+/* TABLAS */
+function tableHTML(entries) {
+  const half=Math.ceil(entries.length/2);
+  const left=entries.slice(0,half);
+  const right=entries.slice(half);
+  function makeTable(rows) {
+    return `<table class="morse-table">
+      <thead><tr><th>Carácter</th><th>Código Morse</th></tr></thead>
+      <tbody>${rows.map(([a,b])=>`<tr><td>${escapeHTML(a)}</td><td class="morse-code">${b}</td></tr>`).join("")}</tbody>
+    </table>`;
+  }
+  return `<div class="table-grid">
+    <div class="table-block">${makeTable(left)}</div>
+    <div class="table-block">${makeTable(right)}</div>
+  </div>`;
+}
+function escapeHTML(str) {
+  return String(str).replace(/[&<>"']/g, c=>({
+    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+  })[c]);
+}
+function showTable(tab) {
+  let entries, title;
+  if(tab==="letters") { entries=allLetters; title="Letras A–Z"; }
+  if(tab==="numbers") { entries=allNumbers; title="Números 0–9"; }
+  if(tab==="punctuation") { entries=allPunctuation; title="Signos de puntuación"; }
+  if(tab==="prosigns") { entries=Object.entries(prosigns); title="Prosignos"; }
+  $("tableContent").innerHTML=`<h3>${title}</h3>${tableHTML(entries)}`;
+}
+document.querySelectorAll(".tab-btn").forEach(btn=>{
+  btn.addEventListener("click",()=>{
+    document.querySelectorAll(".tab-btn").forEach(b=>b.classList.remove("active"));
+    btn.classList.add("active");
+    showTable(btn.dataset.tab);
+  });
+});
+showTable("letters");
 </script>
 </body>
 </html>
