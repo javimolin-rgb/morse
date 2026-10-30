@@ -1,0 +1,945 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#f5f6fa">
+<title>Aprende Código Morse</title>
+
+<style>
+:root {
+  --bg:#f5f6fa;
+  --card:#fff;
+  --ink:#202431;
+  --muted:#697386;
+  --line:#dce1ea;
+  --blue:#385f9d;
+  --green:#16835d;
+  --gold:#a66a16;
+}
+* {box-sizing:border-box}
+
+body {
+  margin:0;
+  background:var(--bg);
+  color:var(--ink);
+  font:16px/1.5 system-ui,sans-serif;
+}
+
+main {
+  max-width:950px;
+  margin:auto;
+  padding:20px 13px 50px;
+}
+
+h1 {
+  font-size:clamp(30px,7vw,43px);
+  line-height:1.1;
+  margin:10px 0;
+}
+
+h2 {font-size:21px;margin:0 0 10px}
+h3 {font-size:17px;margin:0 0 6px}
+p {margin:7px 0 12px}
+
+.muted {color:var(--muted)}
+.small {font-size:13px;color:var(--muted)}
+
+.card {
+  background:var(--card);
+  border:1px solid #e5e8ef;
+  border-radius:17px;
+  padding:16px;
+  margin:14px 0;
+  box-shadow:0 4px 18px #26334a0a;
+}
+
+button {
+  border:0;
+  border-radius:11px;
+  background:var(--blue);
+  color:white;
+  padding:12px 15px;
+  font:inherit;
+  font-weight:700;
+  cursor:pointer;
+  touch-action:manipulation;
+}
+
+button.secondary {
+  background:#edf0f6;
+  color:#34425a;
+}
+
+button:disabled {opacity:.45}
+
+.tabs {
+  display:flex;
+  gap:7px;
+  overflow-x:auto;
+  padding:5px 0 10px;
+}
+
+.tabs button {white-space:nowrap;flex-shrink:0}
+
+.pill {
+  display:inline-block;
+  background:#edf0f6;
+  border-radius:30px;
+  padding:6px 10px;
+  font-size:13px;
+  margin:3px;
+}
+
+.key {
+  display:flex;
+  flex-wrap:wrap;
+  gap:12px;
+  color:var(--muted);
+  font-size:14px;
+}
+
+.dot {color:var(--green);font-weight:900}
+.dash {color:var(--gold);font-weight:900}
+
+/* ÁRBOL */
+
+.tree-grid {
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+  margin-top:15px;
+}
+
+.tree-card {
+  border:1px solid var(--line);
+  border-radius:14px;
+  padding:10px;
+  background:#fbfcfe;
+  min-width:0;
+}
+
+.tree-card h3 {text-align:center}
+.tree-card p {
+  text-align:center;
+  color:var(--muted);
+  font-size:12px;
+}
+
+.tree-svg {
+  width:100%;
+  height:auto;
+  display:block;
+}
+
+.edge {
+  stroke:#aeb9ca;
+  stroke-width:1.8;
+  fill:none;
+}
+
+.node circle {
+  fill:white;
+  stroke:#8e9bb0;
+  stroke-width:1.5;
+}
+
+.node text {
+  font-size:12px;
+  font-weight:800;
+  fill:#222a39;
+  text-anchor:middle;
+  dominant-baseline:central;
+}
+
+.node .sub {
+  font-size:7px;
+  font-weight:500;
+  fill:#697386;
+}
+
+.node.ext circle {
+  fill:#fff8e9;
+  stroke:#c89a4c;
+}
+
+.node.blank circle {
+  fill:#f2f4f7;
+  stroke:#d4dae3;
+  stroke-dasharray:2 2;
+}
+
+.node.blank text {fill:#a6afbd}
+
+/* MNEMOTECNIAS */
+
+.mnemonic-list {
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:9px;
+}
+
+.mnemonic {
+  border:1px solid var(--line);
+  border-radius:13px;
+  padding:12px;
+  background:#fcfcfe;
+}
+
+.seq {
+  font:800 14px monospace;
+  color:var(--blue);
+  margin-bottom:6px;
+}
+
+.tag {
+  font-size:11px;
+  font-weight:800;
+  text-transform:uppercase;
+  color:var(--muted);
+}
+
+.mnemonic p {font-size:14px}
+
+/* QUIZ */
+
+.progress {
+  height:7px;
+  background:#e9edf4;
+  border-radius:20px;
+  overflow:hidden;
+  margin:12px 0;
+}
+
+.progress span {
+  display:block;
+  height:100%;
+  background:var(--blue);
+  width:0;
+  transition:.2s;
+}
+
+.question {
+  font-size:19px;
+  font-weight:800;
+  margin:15px 0;
+}
+
+.options {
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+}
+
+.opt {
+  background:#f1f4f9;
+  color:#26334a;
+  border:1px solid #e0e6ef;
+  text-align:center;
+  min-height:50px;
+  padding:10px;
+}
+
+.opt.correct {
+  background:#e5f5ed;
+  border-color:#8bc9a9;
+  color:#145b3e;
+}
+
+.opt.wrong {
+  background:#fff0f0;
+  border-color:#e4a3a3;
+  color:#8f3030;
+}
+
+.feedback {
+  padding:12px;
+  border-radius:11px;
+  margin-top:12px;
+  font-weight:650;
+}
+
+.good {background:#e7f5ed;color:#145b3e}
+.bad {background:#fff0f0;color:#8f3030}
+
+.actions {
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  margin-top:13px;
+}
+
+/* TARJETAS */
+
+.flash {
+  background:linear-gradient(145deg,#f0f4fc,#fff);
+  border:1px solid #dfe6f2;
+  border-radius:15px;
+  padding:25px 12px;
+  text-align:center;
+  min-height:145px;
+}
+
+.flash .big {
+  font-size:34px;
+  font-weight:850;
+  letter-spacing:.08em;
+}
+
+.flash .answer {
+  font:800 27px monospace;
+  color:var(--blue);
+  margin-top:8px;
+}
+
+/* TABLAS */
+
+.table-wrap {overflow-x:auto}
+
+table {
+  width:100%;
+  border-collapse:collapse;
+  font-size:14px;
+}
+
+th,td {
+  text-align:left;
+  padding:9px;
+  border-bottom:1px solid #e9ecf1;
+}
+
+th {
+  font-size:12px;
+  color:var(--muted);
+  text-transform:uppercase;
+}
+
+.code {
+  font:750 15px monospace;
+  letter-spacing:.06em;
+  white-space:nowrap;
+}
+
+details {
+  border-top:1px solid #edf0f4;
+  padding:12px 0;
+}
+
+summary {font-weight:700;cursor:pointer}
+
+input {
+  width:100%;
+  padding:12px;
+  border:1px solid var(--line);
+  border-radius:10px;
+  font:inherit;
+}
+
+@media(max-width:620px) {
+  main {padding:15px 11px 40px}
+  .card {padding:13px}
+  .tree-grid {grid-template-columns:1fr}
+  .tree-card {padding:10px 14px}
+  .tree-svg {max-width:390px;margin:auto}
+  .mnemonic-list {grid-template-columns:1fr}
+  .options {grid-template-columns:1fr 1fr}
+  .opt {font-size:14px;padding:10px 6px}
+}
+</style>
+</head>
+
+<body>
+<main>
+
+<header>
+  <div class="pill">📡 GUÍA DE ESTUDIO</div>
+  <h1>Aprende código Morse</h1>
+  <p class="muted">
+    Aprende las letras, memoriza las ramas y practica
+    con juegos interactivos.
+  </p>
+  <div class="key">
+    <span><b class="dot">● Punto</b> = izquierda</span>
+    <span><b class="dash">━ Raya</b> = derecha</span>
+  </div>
+</header>
+
+<!-- ÁRBOL -->
+
+<section class="card" id="arbol">
+<h2>1. Árbol visual de Morse</h2>
+<p class="small">
+Cada círculo es una letra o una continuación de rama.
+El árbol se divide en dos: E (punto) y T (raya).
+Sigue las líneas para encontrar cada letra.
+</p>
+
+<div class="tree-grid" id="trees"></div>
+
+<p class="small">
+Ä y Ö son caracteres extendidos de otros idiomas.
+Las casillas vacías no corresponden a letras A–Z.
+</p>
+</section>
+
+<!-- MNEMOTECNIAS -->
+
+<section class="card" id="memoria">
+<h2>2. Frases para memorizar las filas</h2>
+<p class="small">
+Elige la frase o playlist que más te resuene.
+Las iniciales siempre siguen el orden de izquierda a derecha.
+</p>
+<div id="mnemonics"></div>
+</section>
+
+<!-- QUIZ -->
+
+<section class="card" id="quiz">
+<h2>3. Quiz: practica jugando</h2>
+
+<div>
+  <span class="pill" id="score">⭐ 0 puntos</span>
+</div>
+
+<div class="tabs" id="modes">
+  <button class="secondary" data-mode="code">Código → letra</button>
+  <button class="secondary" data-mode="letter">Letra → código</button>
+  <button class="secondary" data-mode="mix">Mixto</button>
+  <button class="secondary" data-mode="number">Números y signos</button>
+</div>
+
+<div class="progress"><span id="bar"></span></div>
+<div class="small" id="counter">Pregunta 1 de 10</div>
+
+<div class="question" id="prompt"></div>
+<div class="options" id="options"></div>
+<div id="feedback"></div>
+
+<div class="actions">
+  <button id="next" disabled>Siguiente →</button>
+  <button class="secondary" id="restart">Reiniciar</button>
+</div>
+</section>
+
+<!-- FLASHCARDS -->
+
+<section class="card" id="flashcards">
+<h2>4. Tarjetas de memoria</h2>
+<p class="small">
+Intenta recordar la respuesta antes de revelarla.
+</p>
+
+<div class="flash">
+  <div class="small" id="flashlabel"></div>
+  <div class="big" id="flashq"></div>
+  <div class="answer" id="flasha" hidden></div>
+</div>
+
+<div class="actions">
+  <button id="reveal">Mostrar respuesta</button>
+  <button class="secondary" id="another">Otra tarjeta ↻</button>
+  <button class="secondary" id="flip">Cambiar modo</button>
+</div>
+</section>
+
+<!-- CONSULTA -->
+
+<section class="card" id="reference">
+<h2>5. Tabla de consulta</h2>
+
+<details open>
+<summary>Letras A–Z</summary>
+<div class="table-wrap"><table id="lettertable"></table></div>
+</details>
+
+<details>
+<summary>Números 0–9</summary>
+<div class="table-wrap"><table id="numbertable"></table></div>
+</details>
+
+<details>
+<summary>Signos de puntuación</summary>
+<div class="table-wrap"><table id="puncttable"></table></div>
+<p class="small">
+La exclamación y algunos símbolos son extensiones de uso común.
+Las convenciones pueden variar según el curso.
+</p>
+</details>
+
+<details>
+<summary>Prosignos</summary>
+<div class="table-wrap"><table id="prosigntable"></table></div>
+</details>
+
+</section>
+
+<footer class="small">
+Un punto dura 1 unidad y una raya 3 unidades.
+La pausa entre elementos de una letra es 1 unidad,
+entre letras 3 y entre palabras 7.
+</footer>
+
+</main>
+
+<script>
+const letters = {
+A:'.-', B:'-...', C:'-.-.', D:'-..', E:'.',
+F:'..-.', G:'--.', H:'....', I:'..', J:'.---',
+K:'-.-', L:'.-..', M:'--', N:'-.', O:'---',
+P:'.--.', Q:'--.-', R:'.-.', S:'...', T:'-',
+U:'..-', V:'...-', W:'.--', X:'-..-',
+Y:'-.--', Z:'--..'
+};
+
+const numbers = {
+'0':'-----','1':'.----','2':'..---',
+'3':'...--','4':'....-','5':'.....',
+'6':'-....','7':'--...','8':'---..','9':'----.'
+};
+
+const punctuation = {
+'.':'.-.-.-', ',':'--..--', '?':'..--..',
+'!':'-.-.--', "'":'.----.', '"':'.-..-.',
+':':'---...', ';':'-.-.-.', '-':'-....-',
+'/':'-..-.', '(':'-.--.', ')':'-.--.-',
+'=':'-...-', '+':'.-.-.', '&':'.-...',
+'@':'.--.-.', '_':'..--.-', '$':'...-..-'
+};
+
+const prosigns = {
+SOS:'...---...',
+AR:'.-.-.',
+SK:'...-.-',
+BT:'-...-',
+AS:'.-...',
+KA:'-.-.-',
+HH:'........',
+SN:'...-.'
+};
+
+const extended = {
+'Ä':'.-.-',
+'Á / Å':'.--.-',
+'É':'..-..',
+'Ñ':'--.--',
+'Ö':'---.',
+'Ü':'..--'
+};
+
+/* ÁRBOL VISUAL */
+
+const nodeMap = {
+'.':'E','-':'T',
+'..':'I','.-':'A','-.':'N','--':'M',
+'...':'S','..-':'U','.-.':'R','.--':'W',
+'-..':'D','-.-':'K','--.':'G','---':'O',
+'....':'H','...-':'V','..-.':'F',
+'.-..':'L','.--.':'P','.---':'J',
+'-...':'B','-..-':'X','-.-.':'C','-.--':'Y',
+'--..':'Z','--.-':'Q',
+'.-.-':'Ä','---.':'Ö'
+};
+
+function makeTree(root) {
+  const W=350,H=286,top=22,bottom=260;
+  const nodes=[];
+
+  function xFor(path) {
+    const d=path.length;
+    const index=parseInt(
+      path.replace(/\./g,'0').replace(/-/g,'1') || '0',2
+    );
+    return W*(index+.5)/(2**d);
+  }
+
+  function yFor(d) {
+    return top+(bottom-top)*d/4;
+  }
+
+  function add(path) {
+    const d=path.length;
+    nodes.push({
+      path,
+      x:xFor(path),
+      y:yFor(d),
+      d,
+      label:nodeMap[path]||''
+    });
+
+    if(d<4) {
+      add(path+'.');
+      add(path+'-');
+    }
+  }
+
+  add(root);
+
+  let edges='';
+
+  nodes.filter(n=>n.d>0).forEach(n=>{
+    const parent=nodes.find(
+      p=>p.path===n.path.slice(0,-1)
+    );
+
+    edges+=`
+      <line class="edge"
+        x1="${parent.x}" y1="${parent.y+9}"
+        x2="${n.x}" y2="${n.y-9}"/>
+    `;
+  });
+
+  const circles=nodes.map(n=>{
+    const cls=(n.label==='Ä'||n.label==='Ö')
+      ?'ext':(!n.label?'blank':'');
+
+    const label=n.label||'·';
+    const code=n.path
+      .replace(/\./g,'·')
+      .replace(/-/g,'—');
+
+    return `
+      <g class="node ${cls}">
+        <circle cx="${n.x}" cy="${n.y}" r="${n.d===1?14:12}"/>
+        <text x="${n.x}" y="${n.y-2}">${label}</text>
+        <text class="sub" x="${n.x}" y="${n.y+19}">${code}</text>
+      </g>
+    `;
+  }).join('');
+
+  const title=root==='.'
+    ?'Rama del punto · E'
+    :'Rama de la raya · T';
+
+  return `
+    <article class="tree-card">
+      <h3>${title}</h3>
+      <p>Profundidad hasta cuatro señales</p>
+      <svg class="tree-svg"
+        viewBox="0 0 ${W} ${H}"
+        role="img" aria-label="${title}">
+        ${edges}${circles}
+      </svg>
+    </article>
+  `;
+}
+
+document.getElementById('trees').innerHTML =
+  makeTree('.')+makeTree('-');
+
+/* MNEMOTECNIAS */
+
+const mnemonicData = [
+{
+title:'Nivel 1',
+seq:'E – T',
+opts:[
+['Frase','El Tren.'],
+['Canciones','Espresso · Thank U, Next']
+]
+},
+{
+title:'Nivel 2',
+seq:'I – A – N – M',
+opts:[
+['Frase','Inés Ama Nadar Mucho.'],
+['Otra frase','Isabel Ayer No Madrugó.'],
+['Canciones','Into You · As It Was · Night Changes · Mirrors']
+]
+},
+{
+title:'Nivel 3',
+seq:'S – U – R – W – D – K – G – O',
+opts:[
+['Frase','Sofía Usa Ropa; Wendy Diseña, Kevin Guarda Outfits.'],
+['Otra frase','Siempre Uso Reloj; Walter Dice: Keep Going, Olivia.'],
+['Canciones','Shake It Off · Umbrella · Rolling in the Deep · Watermelon Sugar · Dancing Queen · Karma · good 4 u · Oops!... I Did It Again']
+]
+},
+{
+title:'Nivel 4 · rama E',
+seq:'H – V – F – (vacío) – L – Ä – P – J',
+opts:[
+['Frase','Hoy Vienen Flores; (pausa); Luego Ana Prepara Jugo.'],
+['Canciones','Hips Don’t Lie · Viva La Vida · Flowers · (vacío) · Love Story · (Ä) · Perfect · Jolene']
+]
+},
+{
+title:'Nivel 4 · rama T',
+seq:'B – X – C – Y – Z – Q – Ö – (vacío)',
+opts:[
+['Frase','Bruno y Ximena Cocinan; Yasna Zumba, Quique Ordena.'],
+['Canciones','Bad Romance · XO · Crazy in Love · You Belong With Me · Zombie · Quit Playing Games · (Ö) · (vacío)']
+]
+}
+];
+
+document.getElementById('mnemonics').innerHTML =
+mnemonicData.map(m=>`
+  <div style="margin:15px 0">
+    <h3>${m.title}</h3>
+    <div class="mnemonic-list">
+      ${m.opts.map(o=>`
+        <article class="mnemonic">
+          <div class="tag">${o[0]}</div>
+          <div class="seq">${m.seq}</div>
+          <p>${o[1]}</p>
+        </article>
+      `).join('')}
+    </div>
+  </div>
+`).join('');
+
+/* TABLAS */
+
+function tablePairs(obj) {
+  const arr=Object.entries(obj);
+  let html=`
+    <thead>
+      <tr>
+        <th>Carácter</th><th>Morse</th>
+        <th>Carácter</th><th>Morse</th>
+      </tr>
+    </thead><tbody>
+  `;
+
+  const half=Math.ceil(arr.length/2);
+
+  for(let i=0;i<half;i++) {
+    const a=arr[i],b=arr[i+half];
+
+    html+=`
+      <tr>
+        <td><b>${a[0]}</b></td>
+        <td class="code">${a[1]}</td>
+        <td>${b?'<b>'+b[0]+'</b>':''}</td>
+        <td class="code">${b?b[1]:''}</td>
+      </tr>
+    `;
+  }
+
+  return html+'</tbody>';
+}
+
+document.getElementById('lettertable').innerHTML =
+  tablePairs(letters);
+document.getElementById('numbertable').innerHTML =
+  tablePairs(numbers);
+document.getElementById('puncttable').innerHTML =
+  tablePairs(punctuation);
+document.getElementById('prosigntable').innerHTML =
+  tablePairs(prosigns);
+
+/* QUIZ */
+
+const allCodes={...letters,...numbers,...punctuation};
+
+let mode='code';
+let round=0;
+let points=0;
+let total=10;
+let current=null;
+let answered=false;
+
+const $=id=>document.getElementById(id);
+
+function shuffle(arr) {
+  return [...arr].sort(()=>Math.random()-.5);
+}
+
+function choose(arr) {
+  return arr[Math.floor(Math.random()*arr.length)];
+}
+
+function buildQuestion() {
+  answered=false;
+  $('feedback').innerHTML='';
+  $('next').disabled=true;
+
+  const pool=Object.entries(
+    mode==='number'
+      ?{...numbers,...punctuation}
+      :mode==='letter'
+        ?letters
+        :allCodes
+  );
+
+  const entry=choose(pool);
+
+  const askCode =
+    mode==='code' ||
+    (mode==='mix' && Math.random()<.5) ||
+    (mode==='number' && Math.random()<.5);
+
+  current={
+    key:entry[0],
+    code:entry[1],
+    askCode
+  };
+
+  const prompt=askCode
+    ?'¿Qué carácter corresponde a este código?'
+    :`¿Cuál es el código de ${entry[0]}?`;
+
+  $('prompt').innerHTML=`
+    ${prompt}
+    <div style="
+      font:800 28px monospace;
+      color:var(--blue);
+      margin-top:9px">
+      ${askCode?entry[1]:entry[0]}
+    </div>
+  `;
+
+  const correct=askCode?entry[0]:entry[1];
+
+  const distractors=shuffle(
+    pool.filter(x=>x[0]!==entry[0])
+    .map(x=>askCode?x[0]:x[1])
+  ).slice(0,3);
+
+  const options=shuffle([correct,...distractors]);
+
+  $('options').innerHTML=options.map(o=>`
+    <button class="opt">${o}</button>
+  `).join('');
+
+  [...$('options').querySelectorAll('button')]
+    .forEach(btn=>{
+      btn.addEventListener('click',()=>answer(btn,correct));
+    });
+
+  $('counter').textContent=
+    `Pregunta ${round+1} de ${total}`;
+
+  $('bar').style.width=`${round/total*100}%`;
+}
+
+function answer(btn,correct) {
+  if(answered)return;
+
+  answered=true;
+
+  const ok=btn.textContent===correct;
+
+  if(ok)points+=10;
+
+  $('score').textContent=`⭐ ${points} puntos`;
+
+  [...$('options').querySelectorAll('button')]
+    .forEach(b=>{
+      b.disabled=true;
+
+      if(b.textContent===correct)
+        b.classList.add('correct');
+      else if(b===btn)
+        b.classList.add('wrong');
+    });
+
+  $('feedback').innerHTML=`
+    <div class="feedback ${ok?'good':'bad'}">
+      ${ok?'¡Muy bien! +10 puntos 🎉':'Casi. La respuesta correcta era '+correct+'.'}
+      <br>
+      <span style="font-weight:500">
+        ${current.key} = ${current.code}
+      </span>
+    </div>
+  `;
+
+  $('next').disabled=false;
+}
+
+function newRound() {
+  round=0;
+  points=0;
+  $('score').textContent='⭐ 0 puntos';
+  buildQuestion();
+}
+
+document.querySelectorAll('#modes button')
+.forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    mode=btn.dataset.mode;
+
+    document.querySelectorAll('#modes button')
+      .forEach(b=>b.classList.toggle(
+        'secondary',b!==btn
+      ));
+
+    newRound();
+  });
+});
+
+$('next').addEventListener('click',()=>{
+  round++;
+
+  if(round>=total) {
+    $('prompt').textContent=
+      `¡Ronda terminada! ${points} de ${total*10} puntos`;
+
+    $('options').innerHTML='';
+
+    $('feedback').innerHTML=`
+      <div class="feedback good">
+        ¡Buen trabajo! Elige otro modo o reinicia.
+      </div>
+    `;
+
+    $('counter').textContent='Fin de la ronda';
+    $('bar').style.width='100%';
+    $('next').disabled=true;
+
+  } else {
+    buildQuestion();
+  }
+});
+
+$('restart').addEventListener('click',newRound);
+
+newRound();
+
+/* TARJETAS */
+
+let flashMode=0;
+let flashEntry=null;
+
+function newFlash() {
+  const pool=Object.entries(
+    flashMode===0?letters:allCodes
+  );
+
+  flashEntry=choose(pool);
+
+  $('flashlabel').textContent=
+    flashMode===0
+      ?'¿Qué letra es este código?'
+      :'¿Cuál es el código de este carácter?';
+
+  $('flashq').textContent=
+    flashMode===0?flashEntry[1]:flashEntry[0];
+
+  $('flasha').textContent=
+    flashMode===0?flashEntry[0]:flashEntry[1];
+
+  $('flasha').hidden=true;
+  $('reveal').disabled=false;
+}
+
+$('reveal').addEventListener('click',()=>{
+  $('flasha').hidden=false;
+  $('reveal').disabled=true;
+});
+
+$('another').addEventListener('click',newFlash);
+
+$('flip').addEventListener('click',()=>{
+  flashMode=1-flashMode;
+  newFlash();
+});
+
+newFlash();
+
+</script>
+</body>
+</html>
